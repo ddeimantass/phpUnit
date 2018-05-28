@@ -7,27 +7,24 @@ class NumberFormatter
     const M = 'M';
     const K = 'K';
     
-    /** @var float */
-    private $abs;
-    
     /**
      * @param float $number
      * @return string
      */
     public function format(float $number): string
     {
-        $this->abs = abs($number);
+        $abs = abs($number);
         $million = 10 ** 6;
         $hundredThousand = 10 ** 5;
         $thousand = 10 ** 3;
         
-        if ($this->isRangeValid($million)) {
+        if ($this->isRangeValid($abs, $million)) {
             $result = number_format($number / $million, 2) . self::M;
 
-        } elseif ($this->isRangeValid($hundredThousand)) {
+        } elseif ($this->isRangeValid($abs, $hundredThousand)) {
             $result = number_format($number / $thousand) . self::K;
 
-        } elseif (round($this->abs, 2) >= $thousand) {
+        } elseif (round($abs, 2) >= $thousand) {
             $result = number_format($number, 0, '', ' ');
 
         } else {
@@ -42,8 +39,8 @@ class NumberFormatter
      * @param $range int
      * @return bool
      */
-    private function isRangeValid(int $range): bool
+    private function isRangeValid(float $abs, int $range): bool
     {
-        return round($this->abs / $range, 3) >= 1;
+        return round($abs / $range, 3) >= 1;
     }
 }
